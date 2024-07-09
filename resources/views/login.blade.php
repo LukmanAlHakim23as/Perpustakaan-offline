@@ -38,9 +38,9 @@
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
       <img src="image/logo40.png" alt="" style="width: 100px; height: auto;">
-      <a class="h1">Perpustakaan 40</a>
+      <a href="/" class="h1">Perpustakaan 40</a>
     </div>
-    
+
     <div class="card-body">
 
       <form action="/login" method="post">
@@ -63,7 +63,7 @@
         </div>
         <div class="row">
           <div class="col-8">
-            
+
           </div>
           <!-- /.col -->
           <div class="col-4">

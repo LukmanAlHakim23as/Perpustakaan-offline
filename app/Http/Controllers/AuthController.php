@@ -22,10 +22,10 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
- 
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
- 
+
             return redirect()->intended('/dashboard')->with('success', 'Login berhasil.');
         }
 
@@ -37,7 +37,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/')->with('successLogout', 'Anda Telah Berhasil Logout!');
+        return redirect('/login')->with('successLogout', 'Anda Telah Berhasil Logout!');
     }
     /**
      * Show the form for creating a new resource.

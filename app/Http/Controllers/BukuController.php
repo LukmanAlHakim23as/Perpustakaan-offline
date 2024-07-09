@@ -15,7 +15,7 @@ class BukuController extends Controller
      */
     public function index()
     {
-        return view('layouts.pages.databuku',[
+        return view('layouts.pages.databuku', [
             'judul' => 'Data Buku',
             'data' => Buku::all(),
             'dkategori' => kategori::all()
@@ -35,43 +35,47 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
-        
+        // Validasi input yang diterima
         $validatedata = $request->validate([
             'judul' => 'required',
             'kategori_id' => 'required',
             'penulis' => 'required',
             'penerbit' => 'required',
             'deskripsi' => 'required',
-            'stok' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'stok' => 'required|integer',
         ]);
 
-        
+        // Jika ada file gambar yang diunggah
+        if ($request->file('image')) {
+            $validatedata['image'] = $request->file('image')->store('cover-buku', 'public');
+        }
 
+        // Membuat buku baru menggunakan data yang telah divalidasi
         $buku = Buku::create($validatedata);
 
+        // Membuat detail buku sesuai dengan jumlah stok yang diberikan
+        $stok = $request->input('stok');
         $validatedDetail = [
             'buku_id' => $buku->id,
             'status' => 'Tersedia',
         ];
 
-        // Mengambil nilai stok dari permintaan
-        $stok = $request->input('stok');
-
-        // Membuat detail buku sesuai dengan jumlah stok yang diberikan
-        for ($i = 1; $i <= $stok; $i++) {
-            detailbuku::create($validatedDetail);
+        for ($i = 0; $i < $stok; $i++) {
+            DetailBuku::create($validatedDetail);
         }
 
         return redirect()->back()->with('success', 'Buku berhasil ditambahkan');
     }
 
+
     /**
      * Display the specified resource.
      */
-    public function show(buku $buku,$id)
+    public function show(buku $buku, $id)
     {
         $buku = buku::findOrFail($id);
-        return view('layouts.pages.datailbuku',[
+        return view('layouts.pages.datailbuku', [
             'buku' => $buku
         ]);
     }
@@ -101,7 +105,7 @@ class BukuController extends Controller
             'stok' => 'required',
         ]);
 
-        
+
 
         // Perbarui atribut buku
         $buku->update($validatedata);
@@ -124,7 +128,7 @@ class BukuController extends Controller
         elseif ($stok < $bukustok) {
             $hapusdetail = $bukustok - $stok;
             detailbuku::where('buku_id', $buku->id)->take($hapusdetail)->delete();
-            }
+        }
 
         return redirect()->back()->with('success', 'Buku berhasil di Update');
     }
@@ -132,16 +136,16 @@ class BukuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(request $request,buku $buku)
+    public function destroy(request $request, buku $buku)
     {
         $buku = Buku::findOrFail($request->buku_id);
 
         $buku->delete();
 
         $detail = DetailBuku::where('buku_id', $buku->id)->get();
-        foreach($detail as $buku) {
+        foreach ($detail as $buku) {
             $buku->delete();
         }
-        return redirect()->back()->with('success','berhasil di hapus');
+        return redirect()->back()->with('success', 'berhasil di hapus');
     }
 }

@@ -19,7 +19,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/',[AuthController::class, 'index']);
+
+Route::get('/', function () {
+    return view('welcome');
+});
+Route::get('/login',[AuthController::class, 'index']);
 Route::post('/login',[AuthController::class, 'authenticate']);
 
 Route::middleware(['auth'])->group(function () {

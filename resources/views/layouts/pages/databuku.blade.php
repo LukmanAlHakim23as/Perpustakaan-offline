@@ -66,6 +66,7 @@
                                     <th>{{ $buku->penerbit }}</th>
                                     <th>{{ $buku->stok }}</th>
                                     <th>
+                                        <a href="{{ route('databuku.show', $buku->id) }}">show</a>
                                         <form action="{{ route('databuku.destroy', $buku->id) }}" method="post">
                                             @csrf
                                             @method('delete')
@@ -102,6 +103,11 @@
                                             <label for="judul">Judul</label>
                                             <input type="text" class="form-control" name="judul" id="judul"
                                                 placeholder="Masukan Judul" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="image">Cover</label>
+                                            <input type="file" class="form-control" name="image" id="image"
+                                                required>
                                         </div>
                                         <div class="form-group">
                                             <label for="kategori">Kategori</label>
